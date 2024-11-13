@@ -1,0 +1,123 @@
+/* Reset basic styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Roboto", sans-serif;
+}
+
+/* Full page height */
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
+  height: 100%;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0078d4; /* Updated to blue */
+  color: white;
+  padding: 10px 20px;
+  width: 100%;
+}
+
+.title {
+  font-size: 24px;
+  margin: 0 auto;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.username {
+  margin-right: 10px;
+}
+
+.logout {
+  background-color: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+/* Main Content */
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  width: 100%;
+  flex-grow: 1;
+}
+
+/* Management Options - Grid Layout */
+.management-options {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(150px, 1fr)
+  ); /* Flexible columns */
+  gap: 20px;
+  justify-items: center;
+  width: 100%;
+  max-width: 1200px; /* Max width for the grid */
+}
+
+.option-box {
+  width: 150px;
+  height: 150px;
+  background-color: #0078d4; /* Updated to blue */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+}
+
+.option-box:hover {
+  background-color: #ffa500; /* Updated hover to orange */
+}
+
+/* Footer */
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+}
+
+/* Mobile/Tablet Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    display: block;
+    text-align: center;
+  }
+
+  .management-options {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(120px, 1fr)
+    ); /* Adjusted for smaller screens */
+  }
+
+  .option-box {
+    width: 120px;
+    height: 120px;
+    font-size: 14px;
+  }
+}
