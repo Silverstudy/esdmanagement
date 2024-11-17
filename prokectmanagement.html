@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Management</title>
+    <style>
+      /* Basic Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        line-height: 1.5;
+        font-size: 0.9rem; /* Adjusted font size */
+      }
+
+      .container {
+        max-width: 1400px; /* Extended width for better table display */
+        margin: 50px auto;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+      }
+
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+        align-items: center;
+      }
+
+      .filters input,
+      .filters select {
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        width: calc(33.33% - 10px);
+      }
+
+      .filters button {
+        background-color: #2ecc71;
+        color: white;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .filters button:hover {
+        background-color: #27ae60;
+      }
+
+      .filters .sort-buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        table-layout: fixed; /* Ensures all columns are evenly distributed */
+      }
+
+      table th,
+      table td {
+        padding: 10px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      table th {
+        background-color: #2c3e50;
+        color: white;
+      }
+
+      table td input,
+      table td select {
+        width: 100%;
+        padding: 8px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      .action-btns button {
+        background-color: #34495e;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 2px;
+        transition: background-color 0.3s ease;
+      }
+
+      .action-btns button:hover {
+        background-color: #2c3e50;
+      }
+
+      /* For smaller screen sizes */
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .filters input,
+        .filters select {
+          width: 100%;
+        }
+
+        table th,
+        table td {
+          font-size: 0.85rem;
+        }
+
+        table td input,
+        table td select {
+          font-size: 0.85rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Project Management</h1>
+
+      <!-- Filters Section -->
+      <div class="filters">
+        <input
+          type="text"
+          id="search-keyword"
+          placeholder="Enter Project ID, Builder Name, Location, or Company Name"
+        />
+        <select id="phase-filter">
+          <option value="">Select Phase</option>
+          <option value="Quotation">Quotation</option>
+          <option value="Started">Started</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+          <option value="Payment Completed">Payment Completed</option>
+        </select>
+        <button onclick="searchProjects()">Search</button>
+        <div class="sort-buttons">
+          <button onclick="sortProjects('startDate', 'asc')">
+            Start Date (Asc)
+          </button>
+          <button onclick="sortProjects('startDate', 'desc')">
+            Start Date (Desc)
+          </button>
+          <button onclick="sortProjects('endDate', 'asc')">
+            End Date (Asc)
+          </button>
+          <button onclick="sortProjects('endDate', 'desc')">
+            End Date (Desc)
+          </button>
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <table>
+        <thead>
+          <tr>
+            <th>Project ID</th>
+            <th>Location</th>
+            <th>Builder</th>
+            <th>Company</th>
+            <th>Manager</th>
+            <th>Phase</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="project-table-body">
+          <tr>
+            <td><input type="text" value="P001" /></td>
+            <td><input type="text" value="123 Main St" /></td>
+            <td><input type="text" value="John Doe" /></td>
+            <td><input type="text" value="ABC Corp" /></td>
+            <td><input type="text" value="Jane Smith" /></td>
+            <td>
+              <select>
+                <option value="Quotation">Quotation</option>
+                <option value="Started" selected>Started</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Payment Completed">Payment Completed</option>
+              </select>
+            </td>
+            <td><input type="date" value="2023-01-01" /></td>
+            <td><input type="date" value="2023-12-31" /></td>
+            <td class="action-btns">
+              <button>Save</button>
+              <button>Delete</button>
+              <button onclick="viewProjectDetails()">View Project</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button onclick="addNewProject()" style="margin-top: 20px">
+        Add New Project
+      </button>
+    </div>
+
+    <script>
+      function searchProjects() {
+        const keyword = document
+          .getElementById("search-keyword")
+          .value.toLowerCase();
+        const phase = document.getElementById("phase-filter").value;
+
+        const rows = document.querySelectorAll("#project-table-body tr");
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll("td");
+          const id = cells[0].querySelector("input").value.toLowerCase();
+          const location = cells[1].querySelector("input").value.toLowerCase();
+          const builder = cells[2].querySelector("input").value.toLowerCase();
+          const company = cells[3].querySelector("input").value.toLowerCase();
+          const phaseValue = cells[5].querySelector("select").value;
+
+          if (
+            (id.includes(keyword) ||
+              location.includes(keyword) ||
+              builder.includes(keyword) ||
+              company.includes(keyword)) &&
+            (!phase || phase === phaseValue)
+          ) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      }
+
+      function sortProjects(dateType, order) {
+        const tableBody = document.getElementById("project-table-body");
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+        const sortedRows = rows.sort((a, b) => {
+          const dateA = new Date(
+            a.cells[dateType === "startDate" ? 6 : 7].querySelector(
+              "input"
+            ).value
+          );
+          const dateB = new Date(
+            b.cells[dateType === "startDate" ? 6 : 7].querySelector(
+              "input"
+            ).value
+          );
+          return order === "asc" ? dateA - dateB : dateB - dateA;
+        });
+
+        tableBody.innerHTML = "";
+        sortedRows.forEach((row) => tableBody.appendChild(row));
+      }
+
+      function addNewProject() {
+        const tableBody = document.getElementById("project-table-body");
+        const newRow = `
+          <tr>
+            <td><input type="text" value="" /></td>
+            <td><input type="text" value="" /></td>
+            <td><input type="text" value="" /></td>
+            <td><input type="text" value="" /></td>
+            <td><input type="text" value="" /></td>
+            <td>
+              <select>
+                <option value="Quotation">Quotation</option>
+                <option value="Started">Started</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Payment Completed">Payment Completed</option>
+              </select>
+            </td>
+            <td><input type="date" value="" /></td>
+            <td><input type="date" value="" /></td>
+            <td class="action-btns">
+              <button>Save</button>
+              <button>Delete</button>
+              <button onclick="viewProjectDetails()">View Project</button>
+            </td>
+          </tr>`;
+        tableBody.insertAdjacentHTML("beforeend", newRow);
+      }
+
+      function viewProjectDetails() {
+        // Redirect or open detailed project view
+        alert("Viewing project details...");
+      }
+    </script>
+  </body>
+</html>

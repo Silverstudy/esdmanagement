@@ -111,6 +111,14 @@
         <a href="#">Sales Management</a>
         <a href="#">Market Management</a>
         <a href="#">Financial Management</a>
+        <!-- Placeholder for attendance management, only visible for admin -->
+        <a
+          href="attendancemanagement.html"
+          id="attendanceManagement"
+          style="display: none"
+        >
+          Attendance Management
+        </a>
       </div>
 
       <div class="footer">
@@ -120,7 +128,22 @@
 
     <script>
       // Dynamically set the username (replace this logic with your login mechanism)
-      const username = "JohnDoe"; // Example username from login
+      const username = "admin"; // Example username from login
+
+      // Ensure the Attendance Management link is displayed only for admin
+      const attendanceManagementLink = document.getElementById(
+        "attendanceManagement"
+      );
+
+      if (username === "admin") {
+        // If the user is admin, display the "Attendance Management" link
+        attendanceManagementLink.style.display = "inline-block";
+      } else {
+        // Hide the "Attendance Management" link for non-admin users
+        attendanceManagementLink.style.display = "none";
+      }
+
+      // Dynamically set the username in the Attendance link
       const attendanceLink = document.querySelector(
         'a[href^="attendance.html"]'
       );
