@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quotation System</title>
+    <style>
+      /* 黑白灰设计风格 */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        margin: 0 auto;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      header {
+        text-align: center;
+        padding: 20px;
+        background-color: #333;
+        color: white;
+      }
+      h1 {
+        margin: 0;
+      }
+      .form-section {
+        margin-bottom: 20px;
+      }
+      .form-section input,
+      .form-section select,
+      .form-section button {
+        padding: 10px;
+        margin: 10px;
+        width: 200px;
+        font-size: 16px;
+      }
+      .form-section button {
+        background-color: #333;
+        color: white;
+        border: none;
+      }
+      .form-section button:hover {
+        background-color: #444;
+      }
+      .table-container {
+        margin-top: 20px;
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .total-row {
+        background-color: #f9f9f9;
+        font-weight: bold;
+      }
+      footer {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>ESD Quotation System</h1>
+      </header>
+
+      <!-- 服务报价部分 -->
+      <div class="form-section" id="service-section">
+        <h2>Service Quotation</h2>
+        <button type="button" onclick="addService()">Add Service</button>
+        <table id="service-table">
+          <thead>
+            <tr>
+              <th>Service Type</th>
+              <th>Service Name</th>
+              <th>Unit Price</th>
+              <th>Quantity</th>
+              <th>Total Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- 人工报价部分 -->
+      <div class="form-section" id="labor-section">
+        <h2>Labor Quotation</h2>
+        <button type="button" onclick="addLabor()">Add Labor</button>
+        <table id="labor-table">
+          <thead>
+            <tr>
+              <th>Unit Price</th>
+              <th>Quantity</th>
+              <th>Total Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- 材料报价部分 -->
+      <div class="form-section" id="material-section">
+        <h2>Material Quotation</h2>
+        <button type="button" onclick="addMaterial()">Add Material</button>
+        <table id="material-table">
+          <thead>
+            <tr>
+              <th>Material Type</th>
+              <th>Unit Price</th>
+              <th>Quantity</th>
+              <th>Total Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="form-section">
+        <button type="button" onclick="saveQuotation()">Save Quotation</button>
+        <button type="button" onclick="generatePDF()">Generate PDF</button>
+      </div>
+
+      <footer>
+        <p>ESD Quotation System &copy; 2024</p>
+      </footer>
+    </div>
+
+    <script>
+      // 动态添加报价项
+      function addService() {
+        const table = document
+          .getElementById("service-table")
+          .getElementsByTagName("tbody")[0];
+        const row = table.insertRow();
+
+        row.innerHTML = `
+        <td><input type="text" name="service_type" placeholder="Service Type" /></td>
+        <td><input type="text" name="service_name" placeholder="Service Name" /></td>
+        <td><input type="number" name="unit_price" placeholder="Unit Price" onchange="updateServiceTotalPrice(this)" /></td>
+        <td><input type="number" name="quantity" placeholder="Quantity" onchange="updateServiceTotalPrice(this)" /></td>
+        <td><input type="number" name="total_price" placeholder="Total Price" readonly /></td>
+        <td><button type="button" onclick="removeRow(this)">Remove</button></td>
+      `;
+      }
+
+      function addLabor() {
+        const table = document
+          .getElementById("labor-table")
+          .getElementsByTagName("tbody")[0];
+        const row = table.insertRow();
+
+        row.innerHTML = `
+        <td><input type="number" name="unit_price" placeholder="Unit Price" onchange="updateLaborTotalPrice(this)" /></td>
+        <td><input type="number" name="quantity" placeholder="Quantity" onchange="updateLaborTotalPrice(this)" /></td>
+        <td><input type="number" name="total_price" placeholder="Total Price" readonly /></td>
+        <td><button type="button" onclick="removeRow(this)">Remove</button></td>
+      `;
+      }
+
+      function addMaterial() {
+        const table = document
+          .getElementById("material-table")
+          .getElementsByTagName("tbody")[0];
+        const row = table.insertRow();
+
+        row.innerHTML = `
+        <td><input type="text" name="material_type" placeholder="Material Type" /></td>
+        <td><input type="number" name="unit_price" placeholder="Unit Price" onchange="updateMaterialTotalPrice(this)" /></td>
+        <td><input type="number" name="quantity" placeholder="Quantity" onchange="updateMaterialTotalPrice(this)" /></td>
+        <td><input type="number" name="total_price" placeholder="Total Price" readonly /></td>
+        <td><button type="button" onclick="removeRow(this)">Remove</button></td>
+      `;
+      }
+
+      // 计算各个报价项的总价
+      function updateServiceTotalPrice(input) {
+        const row = input.parentElement.parentElement;
+        const unitPrice =
+          parseFloat(row.querySelector('[name="unit_price"]').value) || 0;
+        const quantity =
+          parseFloat(row.querySelector('[name="quantity"]').value) || 0;
+        row.querySelector('[name="total_price"]').value = (
+          unitPrice * quantity
+        ).toFixed(2);
+      }
+
+      function updateLaborTotalPrice(input) {
+        const row = input.parentElement.parentElement;
+        const unitPrice =
+          parseFloat(row.querySelector('[name="unit_price"]').value) || 0;
+        const quantity =
+          parseFloat(row.querySelector('[name="quantity"]').value) || 0;
+        row.querySelector('[name="total_price"]').value = (
+          unitPrice * quantity
+        ).toFixed(2);
+      }
+
+      function updateMaterialTotalPrice(input) {
+        const row = input.parentElement.parentElement;
+        const unitPrice =
+          parseFloat(row.querySelector('[name="unit_price"]').value) || 0;
+        const quantity =
+          parseFloat(row.querySelector('[name="quantity"]').value) || 0;
+        row.querySelector('[name="total_price"]').value = (
+          unitPrice * quantity
+        ).toFixed(2);
+      }
+
+      // 删除行
+      function removeRow(button) {
+        const row = button.parentElement.parentElement;
+        row.parentElement.removeChild(row);
+      }
+
+      // 保存报价单到数据库
+      function saveQuotation() {
+        const totalServicePrice = calculateTotal("service");
+        const totalLaborPrice = calculateTotal("labor");
+        const totalMaterialPrice = calculateTotal("material");
+        const grandTotal =
+          totalServicePrice + totalLaborPrice + totalMaterialPrice;
+
+        fetch("/save-quotation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            total_service_price: totalServicePrice,
+            total_labor_price: totalLaborPrice,
+            total_material_price: totalMaterialPrice,
+            grand_total: grandTotal,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Quotation saved successfully!");
+            }
+          });
+      }
+
+      // 计算报价总额
+      function calculateTotal(type) {
+        const rows = document.querySelectorAll(`#${type}-table tbody tr`);
+        let total = 0;
+        rows.forEach((row) => {
+          const totalPrice =
+            parseFloat(row.querySelector('[name="total_price"]').value) || 0;
+          total += totalPrice;
+        });
+        return total.toFixed(2);
+      }
+
+      // 生成PDF
+      function generatePDF() {
+        fetch("/generate-pdf")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("PDF Generated!");
+            }
+          });
+      }
+    </script>
+  </body>
+</html>
